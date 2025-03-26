@@ -1,0 +1,55 @@
+# Core ApplicationSet that discovers and deploys all charts by environment
+# argocd/applicationsets/environments-appset.yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: helm-environments
+  namespace: argocd
+spec:
+  generators:
+  - matrix:
+      generators:
+      - git:
+          repoURL: https://github.com/yourusername/my-gitops-repo.git
+          revision: HEAD
+          directories:
+          - path: charts/*
+      - list:
+          elements:
+          - env: dev
+            namespace: -dev
+          - env: prod
+            namespace: -prod
+  template:
+    metadata:
+      name: '{{path.basename}}-{{env}}'
+      labels:
+        environment: '{{env}}'
+        app: '{{path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/yourusername/my-gitops-repo.git
+        targetRevision: HEAD
+        path: '{{path}}'
+        helm:
+          valueFiles:
+          - values.yaml
+          - environments/{{env}}-values.yaml
+        plugin:
+          name: helm-secrets
+          env:
+          - name: HELM_SECRETS_SOPS_PATH
+            value: /custom-tools/sops
+          - name: HELM_SECRETS_VALUES_PASSWORDS
+            value: environments/secrets-{{env}}.enc.yaml=
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path.basename}}{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true

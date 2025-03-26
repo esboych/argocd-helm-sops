@@ -1,0 +1,54 @@
+# Optional: ApplicationSet for discovering charts with different deployment strategies
+# argocd/applicationsets/deployment-strategies.yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: deployment-strategies
+  namespace: argocd
+spec:
+  generators:
+  - matrix:
+      generators:
+      - git:
+          repoURL: https://github.com/yourusername/my-gitops-repo.git
+          revision: HEAD
+          directories:
+          - path: charts/*
+      - list:
+          elements:
+          - strategy: standard
+            syncPolicy: automated
+            selfHeal: "true"
+            prune: "true"
+          - strategy: manual
+            syncPolicy: none
+            selfHeal: "false"
+            prune: "false"
+  template:
+    metadata:
+      name: '{{path.basename}}-{{strategy}}'
+      labels:
+        strategy: '{{strategy}}'
+        app: '{{path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/yourusername/my-gitops-repo.git
+        targetRevision: HEAD
+        path: '{{path}}'
+        helm:
+          valueFiles:
+          - values.yaml
+          - environments/dev-values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path.basename}}-{{strategy}}'
+      {{- if eq .strategy "automated" }}
+      syncPolicy:
+        automated:
+          prune: {{prune}}
+          selfHeal: {{selfHeal}}
+        syncOptions:
+        - CreateNamespace=true
+      {{- end }}

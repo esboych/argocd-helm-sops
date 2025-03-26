@@ -1,0 +1,34 @@
+# charts/frontend/values.yaml
+replicaCount: 1
+
+image:
+  repository: nginx  # Placeholder image, replace with your actual frontend image
+  tag: 1.21
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hosts:
+    - host: frontend.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 384Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+env:
+  API_URL: http://backend-api

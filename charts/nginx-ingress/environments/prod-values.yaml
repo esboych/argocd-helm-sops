@@ -1,0 +1,41 @@
+# charts/nginx-ingress/environments/prod-values.yaml
+nginx-ingress:
+  controller:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+    config:
+      log-level: error
+      ssl-protocols: TLSv1.2 TLSv1.3
+      use-forwarded-headers: "true"
+      proxy-buffer-size: "16k"
+    replicaCount: 2
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 5
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    ingressClassResource:
+      name: nginx
+      controllerValue: "k8s.io/ingress-nginx"
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - nginx-ingress-controller
+          topologyKey: kubernetes.io/hostname
+  defaultBackend:
+    enabled: true
+    resources:
+      limits:
+        cpu: 10m
+        memory: 20Mi

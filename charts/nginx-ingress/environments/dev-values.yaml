@@ -1,0 +1,19 @@
+# charts/nginx-ingress/environments/dev-values.yaml
+nginx-ingress:
+  controller:
+    resources:
+      limits:
+        cpu: 300m
+        memory: 384Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    config:
+      log-level: info
+    ingressClassResource:
+      name: nginx-dev
+      controllerValue: "k8s.io/ingress-nginx-dev"
+  defaultBackend:
+    enabled: true
+    service:
+      type: ClusterIP

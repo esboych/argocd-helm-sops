@@ -1,0 +1,9 @@
+creation_rules:
+  - path_regex: secrets-dev\.yaml$
+    gcp_kms: projects/k8s-1-dev/locations/global/keyRings/argocd-keyring/cryptoKeys/argocd-key
+  - path_regex: secrets-prod\.yaml$
+    gcp_kms: projects/k8s-1-dev/locations/global/keyRings/argocd-keyring/cryptoKeys/argocd-key
+  - path_regex: .*/environments/secrets-dev\.enc\.yaml$
+    gcp_kms: projects/k8s-1-dev/locations/global/keyRings/argocd-keyring/cryptoKeys/argocd-key
+  - path_regex: .*/environments/secrets-prod\.enc\.yaml$
+    gcp_kms: projects/k8s-1-dev/locations/global/keyRings/argocd-keyring/cryptoKeys/argocd-key

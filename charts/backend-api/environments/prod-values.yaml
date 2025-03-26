@@ -1,0 +1,21 @@
+# charts/backend-api/environments/prod-values.yaml
+replicaCount: 3
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+env:
+  API_LOG_LEVEL: info
+  API_ENVIRONMENT: production
+
+postgresql:
+  auth:
+    password: null  # Will be replaced by the value from secrets
+  primary:
+    persistence:
+      size: 10Gi

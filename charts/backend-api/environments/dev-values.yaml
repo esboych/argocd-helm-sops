@@ -1,0 +1,18 @@
+# charts/backend-api/environments/dev-values.yaml
+replicaCount: 1
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 384Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+env:
+  API_LOG_LEVEL: debug
+  API_ENVIRONMENT: development
+
+postgresql:
+  auth:
+    password: null  # Will be replaced by the value from secrets

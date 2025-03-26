@@ -1,0 +1,13 @@
+# charts/frontend/environments/dev-values.yaml
+replicaCount: 1
+
+ingress:
+  hosts:
+    - host: dev.frontend.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+env:
+  API_URL: http://backend-api.backend-dev.svc.cluster.local
+  DEBUG: "true"

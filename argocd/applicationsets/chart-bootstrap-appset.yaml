@@ -1,0 +1,33 @@
+# Optional: A bootstrap ApplicationSet that deploys the main ApplicationSet
+# argocd/applicationsets/chart-bootstrap-appset.yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bootstrap-appsets
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/yourusername/my-gitops-repo.git
+      revision: HEAD
+      directories:
+      - path: argocd/applicationsets
+      - exclude: true
+        path: argocd/applicationsets/chart-bootstrap-appset.yaml
+  template:
+    metadata:
+      name: 'appset-{{path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/yourusername/my-gitops-repo.git
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
