@@ -1,0 +1,4 @@
+# values.yaml
+gitRepo:
+  url: https://github.com/esboych/argocd-helm-sops
+  revision: HEAD

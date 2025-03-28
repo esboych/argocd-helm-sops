@@ -9,7 +9,7 @@ metadata:
 spec:
   generators:
   - git:
-      repoURL: https://github.com/yourusername/my-gitops-repo.git
+      repoURL: https://github.com/esboych/argocd-helm-sops
       revision: HEAD
       directories:
       - path: argocd/applicationsets
@@ -21,7 +21,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: https://github.com/yourusername/my-gitops-repo.git
+        repoURL: https://github.com/esboych/argocd-helm-sops
         targetRevision: HEAD
         path: '{{path}}'
       destination:
